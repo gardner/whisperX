@@ -1,7 +1,7 @@
 # Use NVIDIA CUDA base image for GPU support
 # Note: README recommends CUDA 12.8, but we use 12.6 as a widely available recent version.
 # You may need to adjust the tag if 12.8 becomes available or specific 12.8 features are required.
-FROM nvidia/cuda:12.4.1-cudnn-devel-ubuntu22.04
+FROM nvidia/cuda:12.9.1-cudnn-devel-ubuntu22.04
 COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # Set environment variables
@@ -46,7 +46,8 @@ COPY . .
 RUN uv sync --frozen --no-dev
 
 # Add the virtual environment to PATH
-ENV PATH="/app/.venv/bin:$PATH"
+ENV PATH="/app/.venv/bin:$PATH" \
+    LD_LIBRARY_PATH="/app/.venv/lib/python3.10/site-packages/nvidia/cudnn/lib:/app/.venv/lib/python3.10/site-packages/nvidia/cublas/lib:$LD_LIBRARY_PATH"
 
 # Set entrypoint
 ENTRYPOINT ["whisperx"]
